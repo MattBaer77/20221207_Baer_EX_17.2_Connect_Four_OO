@@ -1,11 +1,15 @@
 class Game{
 
-  constructor(WIDTH,HEIGHT) {
-    // this.players = [1,2];
+  constructor(WIDTH, HEIGHT , p1, p2) {
+    this.p1 = p1;
+    this.p2 = p2;
+    
+    this.players = [ p1 , p2 ];
 
     this.WIDTH = WIDTH;
     this.HEIGHT = HEIGHT;
-    this.currPlayer = 1;
+
+    this.currPlayer = p1;
     this.board = [];
 
     this.makeBoard();
@@ -55,12 +59,9 @@ class Game{
   }
 
   findSpotForCol(x) {
+
     for (let y = this.HEIGHT - 1; y >= 0; y--) {
-      // console.log(y)
-      // console.log(x)
       if (!this.board[y][x]) {
-        // console.log(y)
-        // console.log(x)
         return y;
       }
     }
@@ -70,9 +71,9 @@ class Game{
   placeInTable(y, x) {
     const piece = document.createElement('div');
     piece.classList.add('piece');
-    piece.classList.add(`p${this.currPlayer}`);
+    piece.classList.add(`${this.currPlayer.colorName}`);
+    piece.style.backgroundColor = `${this.currPlayer.colorName}`;
     piece.style.top = -50 * (y + 2);
-  
     const spot = document.getElementById(`${y}-${x}`);
     spot.append(piece);
   }
@@ -101,7 +102,7 @@ class Game{
       // check for win
       if (this.checkForWin()) {
         this.gameOver = true;
-        return this.endGame(`Player ${this.currPlayer} won!`);
+        return this.endGame(`Player ${this.currPlayer.colorName} won!`);
       }
       
       // check for tie
@@ -111,7 +112,8 @@ class Game{
       }
         
       // switch players
-      this.currPlayer = this.currPlayer === 1 ? 2 : 1;
+      this.currPlayer = this.currPlayer === this.p1 ? this.p2 : this.p1;
+
     }
   }
 
@@ -143,27 +145,31 @@ class Game{
   }
 }
 
+class Player{
+  constructor(colorName) {
+    this.colorName = colorName
+  }
+}
+
 startButton = document.getElementById('start')
+const game = document.getElementById('board')
+
+const startNewGame = () => {
+
+  game.innerText = '';
+
+  let p1 = new Player(document.getElementById('player1').value);
+  let p2 = new Player(document.getElementById('player2').value);
+
+  new Game(7,6,p1,p2);
+  startButton.innerText = 'Restart!';
+}
 
 startButton.addEventListener('click', function() {
-  new Game(7,6);
-  startButton.innerText = 'Restart!';
 
-  startButton.addEventListener('click', function(){
-    
-    const game = document.getElementById('board')
-    game.innerText = '';
-
-    new Game(7,6);
-    
-    // console.log('again?')
-  })
+  startNewGame();
 }
 )
-
-// new Game(7,6);
-
-
 
 
 
